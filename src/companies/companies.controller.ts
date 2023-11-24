@@ -14,22 +14,25 @@ export class CompaniesController {
     return this.companiesService.create(createCompanyDto, user);
   }
 
-  @ResponseMessage("Lấy danh sách công ty với phân trang")
+  @ResponseMessage("Lấy danh sách Company với phân trang")
   @Get()
-  findAll(@Query("limit") limit: string, @Query("page") currentPage: string, @Query() queryString: string) {
+  findAll(@Query("pageSize") limit: string, @Query("current") currentPage: string, @Query() queryString: string) {
     return this.companiesService.findAll(+limit, +currentPage, queryString);
   }
 
+  @ResponseMessage("Lấy thông tin của một công ty")
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.companiesService.findOne(+id);
   }
 
+  @ResponseMessage("Cập nhật thông tin công ty")
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto, @User() user: IUser) {
     return this.companiesService.update(id, updateCompanyDto, user);
   }
 
+  @ResponseMessage("Xóa một công ty")
   @Delete(':id')
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.companiesService.remove(id, user);

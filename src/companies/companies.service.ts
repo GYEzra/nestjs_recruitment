@@ -24,8 +24,8 @@ export class CompaniesService {
 
   async findAll(limit: number, currentPage: number, queryString: string) {
     const { filter, projection, population, sort } = aqp(queryString);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
 
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
@@ -34,10 +34,10 @@ export class CompaniesService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     // @ts-ignore: Unreachable code error
-    // if (isEmpty(sort)) {
-    //   // @ts-ignore: Unreachable code error
-    //   sort = "-updatedAt"
-    // }
+    if (isEmpty(sort)) {
+      // @ts-ignore: Unreachable code error
+      sort = "-updatedAt"
+    }
     const result = await this.companyModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
@@ -49,12 +49,12 @@ export class CompaniesService {
 
     return {
       meta: {
-        current: currentPage, //trang hiện tại
-        pageSize: limit, //số lượng bản ghi đã lấy
-        pages: totalPages, //tổng số trang với điều kiện query
-        total: totalItems // tổng số phần tử (số bản ghi)
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems
       },
-      result //kết quả query
+      result
     }
   }
 
