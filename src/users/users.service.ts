@@ -119,6 +119,7 @@ export class UsersService {
 
   async remove(id: string, user: IUser) {
     await this.userModel.updateOne({ _id: id }, {
+      isDeleted: true,
       deletedBy: {
         _id: user._id,
         email: user.email

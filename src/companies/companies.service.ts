@@ -34,10 +34,10 @@ export class CompaniesService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     // @ts-ignore: Unreachable code error
-    if (isEmpty(sort)) {
-      // @ts-ignore: Unreachable code error
-      sort = "-updatedAt"
-    }
+    // if (isEmpty(sort)) {
+    //   // @ts-ignore: Unreachable code error
+    //   sort = "-updatedAt"
+    // }
     const result = await this.companyModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
@@ -58,8 +58,8 @@ export class CompaniesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  findOne(id: string) {
+    return this.companyModel.findOne({ _id: id });
   }
 
   update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {

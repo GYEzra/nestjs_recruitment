@@ -7,6 +7,12 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { CompaniesModule } from './companies/companies.module';
+import { JobsModule } from './jobs/jobs.module';
+import { FilesModule } from './files/files.module';
+import { ResumesModule } from './resumes/resumes.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolesModule } from './roles/roles.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -29,6 +35,12 @@ import { CompaniesModule } from './companies/companies.module';
     UsersModule,
     AuthModule,
     CompaniesModule,
+    JobsModule,
+    FilesModule,
+    ResumesModule,
+    PermissionsModule,
+    RolesModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [
