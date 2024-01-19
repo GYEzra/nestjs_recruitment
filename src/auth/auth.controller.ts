@@ -6,10 +6,14 @@ import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Req, Res } from '@nestjs/common/decorators';
 import { Response, Request } from 'express';
 import { IUser } from 'src/users/user.interface';
+import { RolesService } from 'src/roles/roles.service';
 
 @Controller("auth")
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(
+        private authService: AuthService,
+        private roleService: RolesService
+    ) { }
 
     @ResponseMessage("Người dùng đăng nhập")
     @Public()
@@ -28,7 +32,9 @@ export class AuthController {
 
     @ResponseMessage("Lấy thông tin người dùng")
     @Get("account")
-    handleGetAccount(@User() user: IUser) {
+    async handleGetAccount(@User() user: IUser) {
+        const role = await this.roleService.findOne(user.role._id) as any;
+        user.permissions = role.permissions;
         return { user };
     }
 

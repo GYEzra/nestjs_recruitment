@@ -7,13 +7,15 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
 import { AuthService } from 'src/auth/auth.service';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { Permission, PermissionSchema } from 'src/permissions/schemas/permission.schema';
 
 @Module({
   controllers: [DatabaseController],
-  providers: [DatabaseService, AuthService, UsersService, JwtService],
+  providers: [DatabaseService, UsersService],
   imports: [MongooseModule.forFeature([
     { name: Role.name, schema: RoleSchema },
-    { name: User.name, schema: UserSchema }
+    { name: User.name, schema: UserSchema },
+    { name: Permission.name, schema: PermissionSchema },
   ])]
 })
 export class DatabaseModule { }

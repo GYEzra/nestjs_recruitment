@@ -2,11 +2,9 @@ import { IsArray, IsBoolean, IsMongoId, IsNotEmpty, IsString } from "class-valid
 import mongoose from "mongoose"
 
 export class CreateRoleDto {
-    @IsString({ message: 'Tên Role phải thuộc kiểu String' })
     @IsNotEmpty({ message: 'Tên Role không được bỏ trống' })
     name: string
 
-    @IsString({ message: 'Description phải thuộc kiểu String' })
     description: string
 
     @IsBoolean({ message: 'Trạng thái phải là kiểu Boolean' })

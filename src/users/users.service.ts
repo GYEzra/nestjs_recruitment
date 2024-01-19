@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,14 +9,21 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { IUser } from './user.interface';
 import path from 'path';
+import { ConfigService } from '@nestjs/config';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
+import { USER_ROLE } from 'src/database/sample';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>) { }
+  constructor(
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
+    @InjectModel(Role.name) private roleModel: SoftDeleteModel<RoleDocument>,
+    private configService: ConfigService
+  ) { }
 
   async create(createUserDto: CreateUserDto, userData: IUser) {
     const hashPassword = this.getHashPassword(createUserDto.password);
-    const isExist = this.userModel.findOne({ email: createUserDto.email });
+    const isExist = await this.userModel.findOne({ email: createUserDto.email });
 
     if (isExist) {
       throw new BadRequestException(`Email ${createUserDto.email} đã tồn tại!`);
@@ -46,6 +53,8 @@ export class UsersService {
       throw new BadRequestException(`Email ${email} đã tồn tại!`);
     }
 
+    const role = await this.roleModel.findOne({ name: USER_ROLE });
+
     let user = await this.userModel.create({
       name,
       email,
@@ -53,7 +62,7 @@ export class UsersService {
       age,
       gender,
       address,
-      role: 'USER'
+      role: role?._id
     })
 
     return user;
@@ -97,13 +106,16 @@ export class UsersService {
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))
-      return 'Not found user';
-    const user = await this.userModel.findOne({ _id: id }).select('-password').exec();
-    return user;
+      throw new NotFoundException(`ID #${id} không tồn tại`);
+
+    return await this.userModel.findOne({ _id: id }).select('-password').populate({
+      path: 'role',
+      select: { _id: 1, name: 1 }
+    });
   }
 
   async findOneByUsername(username: string) {
-    return await this.userModel.findOne({ email: username });
+    return await this.userModel.findOne({ email: username }).populate({ path: 'role', select: { name: 1 } });
   }
 
   async update(updateUserDto: UpdateUserDto, user: IUser) {
@@ -118,13 +130,23 @@ export class UsersService {
   }
 
   async remove(id: string, user: IUser) {
+    if (!mongoose.isValidObjectId(id))
+      throw new NotFoundException(`ID #${id} không tồn tại`);
+
+    const emailAdmin = this.configService.get<string>('USERNAME_ADMIN');
+    const checkUser: IUser = await this.userModel.findOne({ _id: id });
+
+    if (checkUser && checkUser.email === emailAdmin)
+      throw new BadRequestException('Bạn không được phép xóa tài khoản ADMIN');
+
+
     await this.userModel.updateOne({ _id: id }, {
-      isDeleted: true,
       deletedBy: {
         _id: user._id,
         email: user.email
       }
     })
+
     return this.userModel.softDelete({ _id: id });
   }
 
@@ -143,6 +165,6 @@ export class UsersService {
   }
 
   findUserByToken = async (refreshToken: string) => {
-    return await this.userModel.findOne({ refreshToken });
+    return await this.userModel.findOne({ refreshToken }).populate({ path: 'role', select: { name: 1 } });;
   }
 }

@@ -90,17 +90,17 @@ export class PermissionsService {
   }
 
   async remove(id: string, user: IUser) {
-    if (mongoose.isValidObjectId(id)) {
-      return await this.permissionModel.updateOne({ _id: id },
-        {
-          isDeleted: true,
-          deletedBy: {
-            _id: user._id,
-            email: user.email
-          }
-        })
-    }
-    else
+    if (!mongoose.isValidObjectId(id))
       throw new NotFoundException(`ID #${id} không tồn tại`);
+
+    await this.permissionModel.updateOne({ _id: id },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email
+        }
+      })
+
+    return this.permissionModel.softDelete({ _id: id });
   }
 }

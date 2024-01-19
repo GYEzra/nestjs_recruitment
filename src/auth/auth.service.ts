@@ -8,13 +8,15 @@ import { UsersService } from 'src/users/users.service';
 import { Response } from 'express';
 import { BadRequestException } from '@nestjs/common/exceptions'
 import { use } from 'passport';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private rolesService: RolesService
     ) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
@@ -22,14 +24,20 @@ export class AuthService {
         if (user) {
             const isValid = this.usersService.isValidPassword(pass, user.password);
             if (isValid === true) {
-                return user;
+                const userRole = user.role as unknown as { _id: string, name: string };
+                const temp = await this.rolesService.findOne(userRole._id);
+
+                return {
+                    ...user.toObject(),
+                    permissions: temp?.permissions ?? []
+                };
             }
         }
         return null;
     }
 
     async login(user: IUser, response: Response) {
-        const { _id, name, email, role } = user;
+        const { _id, name, email, role, permissions } = user;
         const payload = {
             sub: "token login",
             iss: "from server",
@@ -54,7 +62,8 @@ export class AuthService {
                 _id,
                 name,
                 email,
-                role
+                role,
+                permissions
             }
         };
     }
@@ -83,7 +92,7 @@ export class AuthService {
                 secret: this.configService.get<string>("JWT_REFRESH_TOKEN_SECRET")
             })
 
-            let user = await this.usersService.findUserByToken(refreshToken);
+            const user = await this.usersService.findUserByToken(refreshToken);
 
             if (user) {
                 const { _id, name, email, role } = user;
@@ -97,6 +106,8 @@ export class AuthService {
                 }
 
                 const refresh_token = this.createRefreshToken(payload);
+                const userRole = user.role as unknown as { _id: string, name: string };
+                const temp = await this.rolesService.findOne(userRole._id);
 
                 await this.usersService.updateUserToken(_id.toString(), refresh_token);
 
@@ -112,7 +123,8 @@ export class AuthService {
                         _id,
                         name,
                         email,
-                        role
+                        role,
+                        permissions: temp?.permissions ?? []
                     }
                 };
             } else {

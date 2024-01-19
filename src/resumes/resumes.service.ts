@@ -77,12 +77,13 @@ export class ResumesService {
       throw new NotFoundException(`ID #${id} không tồn tại`);
   }
 
-  findOneByUserId(userId: string) {
-    if (mongoose.isValidObjectId(userId)) {
-      return this.resumeModel.findOne({ user: userId });
-    }
-    else
+  async findOneByUserId(userId: string) {
+    if (!mongoose.isValidObjectId(userId))
       throw new NotFoundException(`ID #${userId} không tồn tại`);
+    return await this.resumeModel.findOne({ user: userId }).sort("-createdAt").populate([
+      { path: "company", select: { name: 1 } },
+      { path: "job", select: { name: 1 } },
+    ]);
   }
 
   update(id: string, updateResumeDto: UpdateResumeDto, user: IUser) {

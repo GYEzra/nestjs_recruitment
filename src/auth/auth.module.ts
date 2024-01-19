@@ -10,10 +10,13 @@ import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User } from 'src/decorator/customise';
 import { UserSchema } from 'src/users/schemas/user.schema';
+import { RolesService } from 'src/roles/roles.service';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
   imports: [
     UsersModule,
+    RolesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
