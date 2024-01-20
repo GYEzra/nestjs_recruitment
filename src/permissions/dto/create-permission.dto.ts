@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator"
+import { IsNotEmpty } from "class-validator"
 
 export class CreatePermissionDto {
     @IsNotEmpty({ message: 'Tên Permission không được bỏ trống' })

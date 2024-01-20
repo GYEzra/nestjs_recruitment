@@ -6,7 +6,6 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
-import { isEmpty } from 'rxjs';
 
 @Injectable()
 export class CompaniesService {
@@ -23,7 +22,7 @@ export class CompaniesService {
   }
 
   async findAll(limit: number, currentPage: number, queryString: string) {
-    const { filter, projection, population, sort } = aqp(queryString);
+    const { filter, population, sort } = aqp(queryString);
     delete filter.current;
     delete filter.pageSize;
 

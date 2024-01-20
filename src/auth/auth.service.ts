@@ -7,7 +7,6 @@ import { IUser } from 'src/users/user.interface';
 import { UsersService } from 'src/users/users.service';
 import { Response } from 'express';
 import { BadRequestException } from '@nestjs/common/exceptions'
-import { use } from 'passport';
 import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()

@@ -2,7 +2,6 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { AuthService } from 'src/auth/auth.service';
 import { Permission, PermissionDocument } from 'src/permissions/schemas/permission.schema';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
@@ -22,9 +21,9 @@ export class DatabaseService implements OnModuleInit {
     ) { }
 
     async onModuleInit() {
-        const isInit = this.configService.get<string>('HAS_INIT');
+        const isInit = JSON.parse(this.configService.get<string>('HAS_INIT'));
 
-        if (Boolean(JSON.parse(isInit))) {
+        if (Boolean(isInit)) {
             const countPermission = await this.permissionModel.count({});
             const countRole = await this.roleModel.count({});
             const countUser = await this.userModel.count({});
