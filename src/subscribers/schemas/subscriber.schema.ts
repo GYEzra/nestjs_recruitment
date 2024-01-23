@@ -12,7 +12,7 @@ export class Subscriber {
     name: string;
 
     @Prop()
-    skills: mongoose.Schema.Types.ObjectId[];
+    skills: string[];
 
     @Prop({ type: Object })
     createdBy: {

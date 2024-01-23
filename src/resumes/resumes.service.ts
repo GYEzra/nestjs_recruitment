@@ -80,7 +80,7 @@ export class ResumesService {
   async findOneByUserId(userId: string) {
     if (!mongoose.isValidObjectId(userId))
       throw new NotFoundException(`ID #${userId} không tồn tại`);
-    return await this.resumeModel.findOne({ user: userId }).sort("-createdAt").populate([
+    return await this.resumeModel.find({ user: userId }).sort("-createdAt").populate([
       { path: "company", select: { name: 1 } },
       { path: "job", select: { name: 1 } },
     ]);

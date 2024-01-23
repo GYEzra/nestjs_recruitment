@@ -3,8 +3,8 @@ import { createParamDecorator, ExecutionContext, SetMetadata } from '@nestjs/com
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
-export const IS_ADMIN_KEY = 'isAdmin';
-export const Admin = () => SetMetadata(IS_ADMIN_KEY, true);
+export const IS_PUBLIC_PERMISSION = 'isPermission';
+export const SkipCheckPermission = () => SetMetadata(IS_PUBLIC_PERMISSION, true);
 
 export const RESPONSE_MESSAGE = 'message';
 export const ResponseMessage = (message: string) =>

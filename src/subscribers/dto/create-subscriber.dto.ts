@@ -11,6 +11,5 @@ export class CreateSubscriberDto {
 
     @IsNotEmpty({ message: 'Skill không được bỏ trống' })
     @IsArray({ message: 'Skills phải là kiểu Array' })
-    @IsMongoId({ each: true, message: 'Skill phải là kiểu ObjectId' })
-    skills: mongoose.Schema.Types.ObjectId[];
+    skills: string[];
 }

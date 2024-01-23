@@ -75,7 +75,7 @@ export class DatabaseService implements OnModuleInit {
                     }
                 ])
 
-                this.logger.log('Init Data success');
+                this.logger.log('Init Data Success');
             }
         }
     }

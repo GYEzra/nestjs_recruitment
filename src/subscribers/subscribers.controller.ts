@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { SubscribersService } from './subscribers.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
-import { ResponseMessage, User } from 'src/decorator/customise';
+import { ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customise';
 import { IUser } from 'src/users/user.interface';
 
 @Controller('subscribers')
@@ -21,16 +21,24 @@ export class SubscribersController {
     return await this.subscribersService.findAll(current, pageSize, queryString);
   }
 
+  @Post('skills')
+  @ResponseMessage("Get subscriber skills")
+  @SkipCheckPermission()
+  async getUserSkills(@User() user: IUser) {
+    return await this.subscribersService.getSkills(user);
+  }
+
   @Get(':id')
   @ResponseMessage("Fetch a subscriber")
   async findOne(@Param('id') id: string) {
     return await this.subscribersService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch()
   @ResponseMessage("Update a subscriber")
-  async update(@Param('id') id: string, @Body() updateSubscriberDto: UpdateSubscriberDto, @User() user: IUser) {
-    return await this.subscribersService.update(id, updateSubscriberDto, user);
+  @SkipCheckPermission()
+  async update(@Body() updateSubscriberDto: UpdateSubscriberDto, @User() user: IUser) {
+    return await this.subscribersService.update(updateSubscriberDto, user);
   }
 
   @Delete(':id')

@@ -29,8 +29,8 @@ export class ResumesController {
 
   @Post('by-user')
   @ResponseMessage('Lấy thông tin CV với User ID')
-  findOneByUserId(@Body("user") userId: string) {
-    return this.resumesService.findOneByUserId(userId);
+  async findOneByUserId(@User() user: IUser) {
+    return await this.resumesService.findOneByUserId(user._id);
   }
 
   @Patch(':id')

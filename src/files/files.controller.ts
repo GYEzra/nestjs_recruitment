@@ -12,20 +12,12 @@ export class FilesController {
   @Post('upload')
   @ResponseMessage('Upload a file')
   @UseInterceptors(FileInterceptor('fileUpload'))
-  uploadFile(@UploadedFile(
-    new ParseFilePipeBuilder()
-      .addFileTypeValidator({
-        fileType: /^(jpg|jpeg|image\/jpeg|png|image\/png|doc|application\/pdf)$/
-      })
-      .addMaxSizeValidator({
-        maxSize: 1024 * 1024
-      })
-      .build({
-        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-      }),
-  ) file: Express.Multer.File) {
-    return file.filename;
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return {
+      fileName: file.filename
+    }
   }
+
 
   @Post()
   create(@Body() createFileDto: CreateFileDto) {
