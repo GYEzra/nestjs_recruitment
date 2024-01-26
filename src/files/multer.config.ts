@@ -33,6 +33,8 @@ export class MulterConfigService implements MulterOptionsFactory {
         });
     }
     createMulterOptions(): MulterModuleOptions {
+        const fileSize = 1024 * 1024 * 1;
+
         return {
             storage: diskStorage({
                 destination: (req, file, cb) => {
@@ -59,7 +61,7 @@ export class MulterConfigService implements MulterOptionsFactory {
                     cb(null, true);
             },
             limits: {
-                fileSize: 1024 * 1024 * 1 // 1MB
+                fileSize: fileSize
             }
         };
     }
