@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ResumesService } from './resumes.service';
 import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customise';
+import { ResponseMessage, User } from 'src/decorator/customise';
 import { IUser } from 'src/users/user.interface';
 
 @Controller('resumes')
