@@ -1,5 +1,4 @@
 import { Controller, Get } from '@nestjs/common';
-import { MailService } from './mail.service';
 import { Public, ResponseMessage } from 'src/decorator/customise';
 import { MailerService } from '@nestjs-modules/mailer';
 import { InjectModel } from '@nestjs/mongoose';
@@ -28,11 +27,12 @@ export class MailController {
       const jobsWithMatchingSkills = await this.jobModel.find({ skills: { $in: subscribeSkills } });
 
       if (jobsWithMatchingSkills.length > 0) {
+        const regex = new RegExp(/\B(?=(\d{3})+(?!\d))/g);
         const jobs = jobsWithMatchingSkills.map(job => {
           return {
             name: job.name,
             company: job.company._id,
-            salary: `${job.salary}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " đ",
+            salary: `${job.salary}`.replace(regex, ',') + " đ",
             skills: job.skills
           }
         })

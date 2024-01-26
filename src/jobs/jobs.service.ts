@@ -28,7 +28,7 @@ export class JobsService {
   }
 
   async findAll(current: string, pageSize: string, queryString: string) {
-    const { filter, projection, population, sort } = aqp(queryString);
+    const { filter, population, sort } = aqp(queryString);
     delete filter.current;
     delete filter.pageSize;
 

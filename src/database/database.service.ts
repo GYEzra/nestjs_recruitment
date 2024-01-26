@@ -21,9 +21,9 @@ export class DatabaseService implements OnModuleInit {
     ) { }
 
     async onModuleInit() {
-        const isInit = JSON.parse(this.configService.get<string>('HAS_INIT'));
+        const isInit = this.configService.get<string>('HAS_INIT') === 'true' ? true : false;
 
-        if (Boolean(isInit)) {
+        if (isInit) {
             const countPermission = await this.permissionModel.count({});
             const countRole = await this.roleModel.count({});
             const countUser = await this.userModel.count({});
