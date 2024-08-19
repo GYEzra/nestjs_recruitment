@@ -44,17 +44,17 @@ export class PermissionsService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     //@ts-ignore: Unreachable code error
-    if (isEmpty(sort)) {
-      // @ts-ignore: Unreachable code error
-      sort = "-updatedAt"
-    }
+    // if (isEmpty(sort)) {
+    //   // @ts-ignore: Unreachable code error
+    //   sort = "-updatedAt"
+    // }
     const result = await this.permissionModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
       // @ts-ignore: Unreachable code error
       .sort(sort)
       .populate(population)
-      .projection(projection)
+      //.projection(projection)
       .exec();
 
     return {

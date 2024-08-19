@@ -79,17 +79,17 @@ export class UsersService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     //@ts-ignore: Unreachable code error
-    if (isEmpty(sort)) {
-      // @ts-ignore: Unreachable code error
-      sort = "-updatedAt"
-    }
+    // if (isEmpty(sort)) {
+    //   // @ts-ignore: Unreachable code error
+    //   sort = "-updatedAt"
+    // }
     const result = await this.userModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
       // @ts-ignore: Unreachable code error
       .sort(sort)
       .populate(population)
-      .projection(projection)
+      //.projection(projection)
       .select('-password')
       .exec();
 
